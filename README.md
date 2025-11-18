@@ -190,6 +190,4 @@ vendor/bin/pint app/Models
 
 Complete API documentation with Postman testing guide available in [API_DOCUMENTATION.md](API_DOCUMENTATION.md)
 
-## License
 
-MIT License
