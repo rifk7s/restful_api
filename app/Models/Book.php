@@ -9,4 +9,20 @@ class Book extends Model
 {
     /** @use HasFactory<\Database\Factories\BookFactory> */
     use HasFactory;
+
+    protected $fillable = [
+        'title',
+        'author',
+        'isbn',
+        'published_year',
+        'available',
+    ];
+
+    protected function casts(): array
+    {
+        return [
+            'published_year' => 'integer',
+            'available' => 'boolean',
+        ];
+    }
 }
