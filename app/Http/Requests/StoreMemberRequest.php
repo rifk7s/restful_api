@@ -20,8 +20,6 @@ class StoreMemberRequest extends FormRequest
             'student_id' => ['required', 'string', 'unique:members,student_id'],
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'email', 'unique:members,email'],
-            'phone' => ['required', 'string', 'max:20'],
-            'member_since' => ['required', 'date'],
         ];
     }
 
@@ -34,9 +32,6 @@ class StoreMemberRequest extends FormRequest
             'email.required' => 'Email address is required',
             'email.email' => 'Please provide a valid email address',
             'email.unique' => 'This email is already registered',
-            'phone.required' => 'Phone number is required',
-            'member_since.required' => 'Member since date is required',
-            'member_since.date' => 'Please provide a valid date',
         ];
     }
 }

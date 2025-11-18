@@ -21,7 +21,7 @@ class BookFactory extends Factory
             'author' => fake()->name(),
             'isbn' => fake()->unique()->isbn13(),
             'published_year' => fake()->year(),
-            'available' => fake()->boolean(80),
+            'stock' => fake()->numberBetween(0, 100),
         ];
     }
 }

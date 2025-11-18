@@ -14,7 +14,7 @@ beforeEach(function () {
 it('can list all members', function () {
     Member::factory()->count(3)->create();
 
-    getJson('/api/v1/members')
+    getJson('/api/members')
         ->assertSuccessful()
         ->assertJsonCount(3, 'data')
         ->assertJsonStructure([
@@ -24,8 +24,6 @@ it('can list all members', function () {
                     'student_id',
                     'name',
                     'email',
-                    'phone',
-                    'member_since',
                     'created_at',
                     'updated_at',
                 ],
@@ -38,11 +36,9 @@ it('can create a new member', function () {
         'student_id' => 'STU12345',
         'name' => 'John Doe',
         'email' => 'john@example.com',
-        'phone' => '+1234567890',
-        'member_since' => '2023-01-01',
     ];
 
-    postJson('/api/v1/members', $memberData)
+    postJson('/api/members', $memberData)
         ->assertCreated()
         ->assertJsonFragment([
             'student_id' => 'STU12345',
@@ -61,11 +57,9 @@ it('requires student_id when creating a member', function () {
     $memberData = [
         'name' => 'John Doe',
         'email' => 'john@example.com',
-        'phone' => '+1234567890',
-        'member_since' => '2023-01-01',
     ];
 
-    postJson('/api/v1/members', $memberData)
+    postJson('/api/members', $memberData)
         ->assertUnprocessable()
         ->assertJsonValidationErrors(['student_id']);
 });
@@ -74,11 +68,9 @@ it('requires name when creating a member', function () {
     $memberData = [
         'student_id' => 'STU12345',
         'email' => 'john@example.com',
-        'phone' => '+1234567890',
-        'member_since' => '2023-01-01',
     ];
 
-    postJson('/api/v1/members', $memberData)
+    postJson('/api/members', $memberData)
         ->assertUnprocessable()
         ->assertJsonValidationErrors(['name']);
 });
@@ -90,11 +82,9 @@ it('requires unique student_id when creating a member', function () {
         'student_id' => 'STU12345',
         'name' => 'John Doe',
         'email' => 'john@example.com',
-        'phone' => '+1234567890',
-        'member_since' => '2023-01-01',
     ];
 
-    postJson('/api/v1/members', $memberData)
+    postJson('/api/members', $memberData)
         ->assertUnprocessable()
         ->assertJsonValidationErrors(['student_id']);
 });
@@ -106,11 +96,9 @@ it('requires unique email when creating a member', function () {
         'student_id' => 'STU12345',
         'name' => 'John Doe',
         'email' => 'john@example.com',
-        'phone' => '+1234567890',
-        'member_since' => '2023-01-01',
     ];
 
-    postJson('/api/v1/members', $memberData)
+    postJson('/api/members', $memberData)
         ->assertUnprocessable()
         ->assertJsonValidationErrors(['email']);
 });
@@ -120,11 +108,9 @@ it('requires valid email format', function () {
         'student_id' => 'STU12345',
         'name' => 'John Doe',
         'email' => 'invalid-email',
-        'phone' => '+1234567890',
-        'member_since' => '2023-01-01',
     ];
 
-    postJson('/api/v1/members', $memberData)
+    postJson('/api/members', $memberData)
         ->assertUnprocessable()
         ->assertJsonValidationErrors(['email']);
 });
@@ -135,7 +121,7 @@ it('can show a specific member', function () {
         'email' => 'john@example.com',
     ]);
 
-    getJson("/api/v1/members/{$member->id}")
+    getJson("/api/members/{$member->id}")
         ->assertSuccessful()
         ->assertJsonFragment([
             'name' => 'John Doe',
@@ -144,7 +130,7 @@ it('can show a specific member', function () {
 });
 
 it('returns 404 when member not found', function () {
-    getJson('/api/v1/members/999')
+    getJson('/api/members/999')
         ->assertNotFound();
 });
 
@@ -157,7 +143,7 @@ it('can update a member', function () {
         'name' => 'New Name',
     ];
 
-    putJson("/api/v1/members/{$member->id}", $updateData)
+    putJson("/api/members/{$member->id}", $updateData)
         ->assertSuccessful()
         ->assertJsonFragment([
             'name' => 'New Name',
@@ -172,11 +158,8 @@ it('can update a member', function () {
 it('can delete a member', function () {
     $member = Member::factory()->create();
 
-    deleteJson("/api/v1/members/{$member->id}")
-        ->assertSuccessful()
-        ->assertJson([
-            'message' => 'Member deleted successfully',
-        ]);
+    deleteJson("/api/members/{$member->id}")
+        ->assertNoContent();
 
     $this->assertDatabaseMissing('members', [
         'id' => $member->id,

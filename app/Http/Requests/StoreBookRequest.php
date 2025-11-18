@@ -21,7 +21,7 @@ class StoreBookRequest extends FormRequest
             'author' => ['required', 'string', 'max:255'],
             'isbn' => ['required', 'string', 'unique:books,isbn'],
             'published_year' => ['required', 'integer', 'min:1000', 'max:'.(date('Y') + 1)],
-            'available' => ['sometimes', 'boolean'],
+            'stock' => ['sometimes', 'integer', 'min:0'],
         ];
     }
 
@@ -35,6 +35,8 @@ class StoreBookRequest extends FormRequest
             'published_year.required' => 'Published year is required',
             'published_year.min' => 'Published year must be at least 1000',
             'published_year.max' => 'Published year cannot be in the future',
+            'stock.integer' => 'Stock must be a number',
+            'stock.min' => 'Stock cannot be negative',
         ];
     }
 }

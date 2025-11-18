@@ -23,7 +23,7 @@ class UpdateBookRequest extends FormRequest
             'author' => ['sometimes', 'string', 'max:255'],
             'isbn' => ['sometimes', 'string', 'unique:books,isbn,'.$bookId],
             'published_year' => ['sometimes', 'integer', 'min:1000', 'max:'.(date('Y') + 1)],
-            'available' => ['sometimes', 'boolean'],
+            'stock' => ['sometimes', 'integer', 'min:0'],
         ];
     }
 
@@ -33,6 +33,8 @@ class UpdateBookRequest extends FormRequest
             'isbn.unique' => 'This ISBN already exists',
             'published_year.min' => 'Published year must be at least 1000',
             'published_year.max' => 'Published year cannot be in the future',
+            'stock.integer' => 'Stock must be a number',
+            'stock.min' => 'Stock cannot be negative',
         ];
     }
 }

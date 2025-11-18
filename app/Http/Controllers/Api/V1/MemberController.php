@@ -44,8 +44,6 @@ class MemberController extends Controller
     {
         $member->delete();
 
-        return response()->json([
-            'message' => 'Member deleted successfully',
-        ], 200);
+        return response()->json(null, 204);
     }
 }

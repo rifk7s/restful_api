@@ -14,14 +14,5 @@ class Member extends Model
         'student_id',
         'name',
         'email',
-        'phone',
-        'member_since',
     ];
-
-    protected function casts(): array
-    {
-        return [
-            'member_since' => 'date',
-        ];
-    }
 }

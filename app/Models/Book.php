@@ -15,14 +15,14 @@ class Book extends Model
         'author',
         'isbn',
         'published_year',
-        'available',
+        'stock',
     ];
 
     protected function casts(): array
     {
         return [
             'published_year' => 'integer',
-            'available' => 'boolean',
+            'stock' => 'integer',
         ];
     }
 }
