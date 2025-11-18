@@ -264,6 +264,7 @@ GET http://localhost:8000/api/v1/members
   "data": [
     {
       "id": 1,
+      "student_id": "STU12345",
       "name": "Alice Johnson",
       "email": "alice@example.com",
       "phone": "+1234567890",
@@ -273,6 +274,7 @@ GET http://localhost:8000/api/v1/members
     },
     {
       "id": 2,
+      "student_id": "STU67890",
       "name": "Bob Smith",
       "email": "bob@example.com",
       "phone": "+0987654321",
@@ -298,6 +300,7 @@ POST http://localhost:8000/api/v1/members
 Content-Type: application/json
 
 {
+  "student_id": "STU12345",
   "name": "Alice Johnson",
   "email": "alice@example.com",
   "phone": "+1234567890",
@@ -306,6 +309,7 @@ Content-Type: application/json
 ```
 
 **Validation Rules:**
+- `student_id`: required, string, unique
 - `name`: required, string, max 255 characters
 - `email`: required, email format, unique
 - `phone`: required, string, max 20 characters
@@ -316,6 +320,7 @@ Content-Type: application/json
 {
   "data": {
     "id": 1,
+    "student_id": "STU12345",
     "name": "Alice Johnson",
     "email": "alice@example.com",
     "phone": "+1234567890",
@@ -329,8 +334,12 @@ Content-Type: application/json
 **Error Response:** `422 Unprocessable Entity`
 ```json
 {
-  "message": "The email must be a valid email address. (and 1 more error)",
+  "message": "The student id field is required. (and 2 more errors)",
   "errors": {
+    "student_id": [
+      "Student ID is required",
+      "This student ID is already registered"
+    ],
     "email": [
       "Please provide a valid email address",
       "This email is already registered"
@@ -360,6 +369,7 @@ GET http://localhost:8000/api/v1/members/1
 {
   "data": {
     "id": 1,
+    "student_id": "STU12345",
     "name": "Alice Johnson",
     "email": "alice@example.com",
     "phone": "+1234567890",
@@ -397,8 +407,9 @@ Content-Type: application/json
 ```
 
 **Validation Rules:**
+- `student_id`: optional, string, unique (except current member) using Rule::unique()->ignore()
 - `name`: optional, string, max 255 characters
-- `email`: optional, email format, unique (except current member)
+- `email`: optional, email format, unique (except current member) using Rule::unique()->ignore()
 - `phone`: optional, string, max 20 characters
 - `member_since`: optional, valid date
 
@@ -407,6 +418,7 @@ Content-Type: application/json
 {
   "data": {
     "id": 1,
+    "student_id": "STU12345",
     "name": "Alice Johnson Smith",
     "email": "alice@example.com",
     "phone": "+1111111111",
@@ -625,6 +637,7 @@ Follow the same pattern for Members API endpoints with appropriate data:
 **Sample Member Data:**
 ```json
 {
+  "student_id": "STU99999",
   "name": "John Doe",
   "email": "john.doe@example.com",
   "phone": "+1234567890",
