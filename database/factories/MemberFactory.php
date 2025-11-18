@@ -17,6 +17,7 @@ class MemberFactory extends Factory
     public function definition(): array
     {
         return [
+            'student_id' => fake()->unique()->numerify('STU#####'),
             'name' => fake()->name(),
             'email' => fake()->unique()->safeEmail(),
             'phone' => fake()->phoneNumber(),

@@ -17,6 +17,7 @@ class StoreMemberRequest extends FormRequest
     public function rules(): array
     {
         return [
+            'student_id' => ['required', 'string', 'unique:members,student_id'],
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'email', 'unique:members,email'],
             'phone' => ['required', 'string', 'max:20'],
@@ -27,6 +28,8 @@ class StoreMemberRequest extends FormRequest
     public function messages(): array
     {
         return [
+            'student_id.required' => 'Student ID is required',
+            'student_id.unique' => 'This student ID is already registered',
             'name.required' => 'Member name is required',
             'email.required' => 'Email address is required',
             'email.email' => 'Please provide a valid email address',

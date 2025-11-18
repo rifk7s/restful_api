@@ -21,6 +21,7 @@ it('can list all members', function () {
             'data' => [
                 '*' => [
                     'id',
+                    'student_id',
                     'name',
                     'email',
                     'phone',
@@ -34,6 +35,7 @@ it('can list all members', function () {
 
 it('can create a new member', function () {
     $memberData = [
+        'student_id' => 'STU12345',
         'name' => 'John Doe',
         'email' => 'john@example.com',
         'phone' => '+1234567890',
@@ -43,18 +45,34 @@ it('can create a new member', function () {
     postJson('/api/v1/members', $memberData)
         ->assertCreated()
         ->assertJsonFragment([
+            'student_id' => 'STU12345',
             'name' => 'John Doe',
             'email' => 'john@example.com',
         ]);
 
     $this->assertDatabaseHas('members', [
+        'student_id' => 'STU12345',
         'name' => 'John Doe',
         'email' => 'john@example.com',
     ]);
 });
 
+it('requires student_id when creating a member', function () {
+    $memberData = [
+        'name' => 'John Doe',
+        'email' => 'john@example.com',
+        'phone' => '+1234567890',
+        'member_since' => '2023-01-01',
+    ];
+
+    postJson('/api/v1/members', $memberData)
+        ->assertUnprocessable()
+        ->assertJsonValidationErrors(['student_id']);
+});
+
 it('requires name when creating a member', function () {
     $memberData = [
+        'student_id' => 'STU12345',
         'email' => 'john@example.com',
         'phone' => '+1234567890',
         'member_since' => '2023-01-01',
@@ -65,10 +83,27 @@ it('requires name when creating a member', function () {
         ->assertJsonValidationErrors(['name']);
 });
 
+it('requires unique student_id when creating a member', function () {
+    $existingMember = Member::factory()->create(['student_id' => 'STU12345']);
+
+    $memberData = [
+        'student_id' => 'STU12345',
+        'name' => 'John Doe',
+        'email' => 'john@example.com',
+        'phone' => '+1234567890',
+        'member_since' => '2023-01-01',
+    ];
+
+    postJson('/api/v1/members', $memberData)
+        ->assertUnprocessable()
+        ->assertJsonValidationErrors(['student_id']);
+});
+
 it('requires unique email when creating a member', function () {
     $existingMember = Member::factory()->create(['email' => 'john@example.com']);
 
     $memberData = [
+        'student_id' => 'STU12345',
         'name' => 'John Doe',
         'email' => 'john@example.com',
         'phone' => '+1234567890',
@@ -82,6 +117,7 @@ it('requires unique email when creating a member', function () {
 
 it('requires valid email format', function () {
     $memberData = [
+        'student_id' => 'STU12345',
         'name' => 'John Doe',
         'email' => 'invalid-email',
         'phone' => '+1234567890',
