@@ -1,37 +1,54 @@
-# RESTful API Perpustakaan - API Documentation
+# RESTful API Perpustakaan - Postman Testing Guide
 
 ## Table of Contents
 1. [Overview](#overview)
 2. [Base URL](#base-url)
-3. [API Endpoints](#api-endpoints)
+3. [Screenshot Requirements](#screenshot-requirements)
+4. [API Endpoints](#api-endpoints)
    - [Books API](#books-api)
    - [Members API](#members-api)
-4. [HTTP Status Codes](#http-status-codes)
-5. [Testing with Postman](#testing-with-postman)
 
 ---
 
 ## Overview
 
-This is a RESTful API for a Library Information System (Sistem Informasi Perpustakaan Universitas) built with Laravel 12. The API provides complete CRUD operations for managing books and members.
-
-**Features:**
-- Full CRUD operations for Books and Members
-- Comprehensive validation with custom error messages
-- RESTful principles (proper HTTP methods and status codes)
-- API versioning (v1)
-- JSON responses
-- Comprehensive test coverage with Pest
+RESTful API untuk Sistem Informasi Perpustakaan Universitas.
+Dokumen ini berisi panduan untuk mengambil screenshot Postman sesuai requirements PDF.
 
 ---
 
 ## Base URL
 
 ```
-http://localhost:8000/api/v1
+http://localhost:8000/api
 ```
 
-All API endpoints are prefixed with `/api/v1` for versioning.
+**Important:** Setiap request di Postman harus menyertakan header:
+- `Accept: application/json`
+- `Content-Type: application/json` (untuk POST/PATCH)
+
+---
+
+## Screenshot Requirements
+
+Berdasarkan PDF Section 4.2, screenshot Postman diperlukan untuk:
+
+### Buku (Books)
+1. ✅ POST /api/books - Create book (201 Created)
+2. ✅ GET /api/books - List all books (200 OK)
+3. ✅ GET /api/books/1 - Get specific book (200 OK / 404 Not Found)
+4. ✅ PATCH /api/books/1 - Update stock (200 OK / 404 Not Found)
+5. ✅ DELETE /api/books/1 - Delete book (204 No Content)
+
+### Anggota (Members)
+6. ✅ POST /api/members - Create member (201 Created)
+7. ✅ POST /api/members - Duplicate student_id (422 Unprocessable)
+8. ✅ GET /api/members/1 - Get specific member (200 OK / 404 Not Found)
+9. ✅ DELETE /api/members/1 - Delete member (204 No Content)
+
+**Additional Requirements:**
+- GET /api/books/ID untuk ID yang sudah dihapus → 404 Not Found
+- POST /api/members dengan email duplikat → 422 Unprocessable
 
 ---
 
@@ -39,18 +56,44 @@ All API endpoints are prefixed with `/api/v1` for versioning.
 
 ### Books API
 
-#### 1. Get All Books
+#### 1. POST - Create Book 
 
-**Endpoint:** `GET /api/v1/books`
+**Endpoint:** `POST /api/books`
 
-**Description:** Retrieve a list of all books in the library.
-
-**Request:**
-```bash
-GET http://localhost:8000/api/v1/books
+**Request Body:**
+```json
+{
+  "isbn": "978-0123456789",
+  "title": "Laravel Mastery",
+  "author": "John Doe",
+  "published_year": 2023,
+  "stock": 10
+}
 ```
 
-**Response:** `200 OK`
+**Expected Response:** `201 Created`
+```json
+{
+  "data": {
+    "id": 1,
+    "title": "Laravel Mastery",
+    "author": "John Doe",
+    "isbn": "978-0123456789",
+    "published_year": 2023,
+    "stock": 10,
+    "created_at": "2025-11-18T02:34:39.000000Z",
+    "updated_at": "2025-11-18T02:34:39.000000Z"
+  }
+}
+```
+
+---
+
+#### 2. GET - List All Books 
+
+**Endpoint:** `GET /api/books`
+
+**Expected Response:** `200 OK`
 ```json
 {
   "data": [
@@ -60,19 +103,9 @@ GET http://localhost:8000/api/v1/books
       "author": "John Doe",
       "isbn": "978-0123456789",
       "published_year": 2023,
-      "available": true,
+      "stock": 10,
       "created_at": "2025-11-18T02:34:39.000000Z",
       "updated_at": "2025-11-18T02:34:39.000000Z"
-    },
-    {
-      "id": 2,
-      "title": "PHP Advanced",
-      "author": "Jane Smith",
-      "isbn": "978-9876543210",
-      "published_year": 2022,
-      "available": false,
-      "created_at": "2025-11-18T02:35:00.000000Z",
-      "updated_at": "2025-11-18T02:35:00.000000Z"
     }
   ]
 }
@@ -80,34 +113,11 @@ GET http://localhost:8000/api/v1/books
 
 ---
 
-#### 2. Create a New Book
+#### 3. GET - Get Specific Book 
 
-**Endpoint:** `POST /api/v1/books`
+**Endpoint:** `GET /api/books/1`
 
-**Description:** Add a new book to the library.
-
-**Request:**
-```bash
-POST http://localhost:8000/api/v1/books
-Content-Type: application/json
-
-{
-  "title": "Laravel Mastery",
-  "author": "John Doe",
-  "isbn": "978-0123456789",
-  "published_year": 2023,
-  "available": true
-}
-```
-
-**Validation Rules:**
-- `title`: required, string, max 255 characters
-- `author`: required, string, max 255 characters
-- `isbn`: required, string, unique
-- `published_year`: required, integer, min 1000, max (current year + 1)
-- `available`: optional, boolean (default: true)
-
-**Response:** `201 Created`
+**Expected Response:** `200 OK`
 ```json
 {
   "data": {
@@ -116,58 +126,14 @@ Content-Type: application/json
     "author": "John Doe",
     "isbn": "978-0123456789",
     "published_year": 2023,
-    "available": true,
+    "stock": 10,
     "created_at": "2025-11-18T02:34:39.000000Z",
     "updated_at": "2025-11-18T02:34:39.000000Z"
   }
 }
 ```
 
-**Error Response:** `422 Unprocessable Entity`
-```json
-{
-  "message": "The title field is required. (and 1 more error)",
-  "errors": {
-    "title": [
-      "Book title is required"
-    ],
-    "isbn": [
-      "This ISBN already exists"
-    ]
-  }
-}
-```
-
----
-
-#### 3. Get a Specific Book
-
-**Endpoint:** `GET /api/v1/books/{id}`
-
-**Description:** Retrieve details of a specific book by ID.
-
-**Request:**
-```bash
-GET http://localhost:8000/api/v1/books/1
-```
-
-**Response:** `200 OK`
-```json
-{
-  "data": {
-    "id": 1,
-    "title": "Laravel Mastery",
-    "author": "John Doe",
-    "isbn": "978-0123456789",
-    "published_year": 2023,
-    "available": true,
-    "created_at": "2025-11-18T02:34:39.000000Z",
-    "updated_at": "2025-11-18T02:34:39.000000Z"
-  }
-}
-```
-
-**Error Response:** `404 Not Found`
+**Or if not found:** `404 Not Found`
 ```json
 {
   "message": "No query results for model [App\\Models\\Book] 999"
@@ -176,70 +142,58 @@ GET http://localhost:8000/api/v1/books/1
 
 ---
 
-#### 4. Update a Book
+#### 4. PATCH - Update Book Stock 
 
-**Endpoint:** `PUT /api/v1/books/{id}` or `PATCH /api/v1/books/{id}`
+**Endpoint:** `PATCH /api/books/1`
 
-**Description:** Update book information. All fields are optional.
-
-**Request:**
-```bash
-PUT http://localhost:8000/api/v1/books/1
-Content-Type: application/json
-
+**Request Body:**
+```json
 {
-  "title": "Laravel Mastery - Updated Edition",
-  "available": false
+  "stock": 12
 }
 ```
 
-**Validation Rules:**
-- `title`: optional, string, max 255 characters
-- `author`: optional, string, max 255 characters
-- `isbn`: optional, string, unique (except current book)
-- `published_year`: optional, integer, min 1000, max (current year + 1)
-- `available`: optional, boolean
-
-**Response:** `200 OK`
+**Expected Response:** `200 OK`
 ```json
 {
   "data": {
     "id": 1,
-    "title": "Laravel Mastery - Updated Edition",
+    "title": "Laravel Mastery",
     "author": "John Doe",
     "isbn": "978-0123456789",
     "published_year": 2023,
-    "available": false,
+    "stock": 12,
     "created_at": "2025-11-18T02:34:39.000000Z",
     "updated_at": "2025-11-18T02:40:00.000000Z"
   }
 }
 ```
 
+**Or if not found:** `404 Not Found`
+
 ---
 
-#### 5. Delete a Book
+#### 5. DELETE - Delete Book 
 
-**Endpoint:** `DELETE /api/v1/books/{id}`
+**Endpoint:** `DELETE /api/books/1`
 
-**Description:** Remove a book from the library.
-
-**Request:**
-```bash
-DELETE http://localhost:8000/api/v1/books/1
+**Expected Response:** `204 No Content`
+```
+(Empty response body)
 ```
 
-**Response:** `200 OK`
-```json
-{
-  "message": "Book deleted successfully"
-}
-```
+**Or if not found:** `404 Not Found`
 
-**Error Response:** `404 Not Found`
+---
+
+#### 6. GET - Deleted Book (404) 
+
+**Endpoint:** `GET /api/books/1` (setelah dihapus)
+
+**Expected Response:** `404 Not Found`
 ```json
 {
-  "message": "No query results for model [App\\Models\\Book] 999"
+  "message": "No query results for model [App\\Models\\Book] 1"
 }
 ```
 
@@ -247,75 +201,20 @@ DELETE http://localhost:8000/api/v1/books/1
 
 ### Members API
 
-#### 1. Get All Members
+#### 1. POST - Create Member 
 
-**Endpoint:** `GET /api/v1/members`
+**Endpoint:** `POST /api/members`
 
-**Description:** Retrieve a list of all library members.
-
-**Request:**
-```bash
-GET http://localhost:8000/api/v1/members
-```
-
-**Response:** `200 OK`
+**Request Body:**
 ```json
-{
-  "data": [
-    {
-      "id": 1,
-      "student_id": "STU12345",
-      "name": "Alice Johnson",
-      "email": "alice@example.com",
-      "phone": "+1234567890",
-      "member_since": "2023-01-15",
-      "created_at": "2025-11-18T02:34:39.000000Z",
-      "updated_at": "2025-11-18T02:34:39.000000Z"
-    },
-    {
-      "id": 2,
-      "student_id": "STU67890",
-      "name": "Bob Smith",
-      "email": "bob@example.com",
-      "phone": "+0987654321",
-      "member_since": "2023-02-20",
-      "created_at": "2025-11-18T02:35:00.000000Z",
-      "updated_at": "2025-11-18T02:35:00.000000Z"
-    }
-  ]
-}
-```
-
----
-
-#### 2. Create a New Member
-
-**Endpoint:** `POST /api/v1/members`
-
-**Description:** Register a new library member.
-
-**Request:**
-```bash
-POST http://localhost:8000/api/v1/members
-Content-Type: application/json
-
 {
   "student_id": "STU12345",
   "name": "Alice Johnson",
-  "email": "alice@example.com",
-  "phone": "+1234567890",
-  "member_since": "2023-01-15"
+  "email": "alice@example.com"
 }
 ```
 
-**Validation Rules:**
-- `student_id`: required, string, unique
-- `name`: required, string, max 255 characters
-- `email`: required, email format, unique
-- `phone`: required, string, max 20 characters
-- `member_since`: required, valid date
-
-**Response:** `201 Created`
+**Expected Response:** `201 Created`
 ```json
 {
   "data": {
@@ -323,29 +222,34 @@ Content-Type: application/json
     "student_id": "STU12345",
     "name": "Alice Johnson",
     "email": "alice@example.com",
-    "phone": "+1234567890",
-    "member_since": "2023-01-15",
     "created_at": "2025-11-18T02:34:39.000000Z",
     "updated_at": "2025-11-18T02:34:39.000000Z"
   }
 }
 ```
 
-**Error Response:** `422 Unprocessable Entity`
+---
+
+#### 2. POST - Duplicate Student ID (422) 
+
+**Endpoint:** `POST /api/members`
+
+**Request Body:** (gunakan student_id yang sama)
 ```json
 {
-  "message": "The student id field is required. (and 2 more errors)",
+  "student_id": "STU12345",
+  "name": "Bob Smith",
+  "email": "bob@example.com"
+}
+```
+
+**Expected Response:** `422 Unprocessable Entity`
+```json
+{
+  "message": "This student ID is already registered",
   "errors": {
     "student_id": [
-      "Student ID is required",
       "This student ID is already registered"
-    ],
-    "email": [
-      "Please provide a valid email address",
-      "This email is already registered"
-    ],
-    "name": [
-      "Member name is required"
     ]
   }
 }
@@ -353,18 +257,38 @@ Content-Type: application/json
 
 ---
 
-#### 3. Get a Specific Member
+#### 3. POST - Duplicate Email (422)
 
-**Endpoint:** `GET /api/v1/members/{id}`
+**Endpoint:** `POST /api/members`
 
-**Description:** Retrieve details of a specific member by ID.
-
-**Request:**
-```bash
-GET http://localhost:8000/api/v1/members/1
+**Request Body:** (gunakan email yang sama)
+```json
+{
+  "student_id": "STU99999",
+  "name": "Charlie Brown",
+  "email": "alice@example.com"
+}
 ```
 
-**Response:** `200 OK`
+**Expected Response:** `422 Unprocessable Entity`
+```json
+{
+  "message": "This email is already registered",
+  "errors": {
+    "email": [
+      "This email is already registered"
+    ]
+  }
+}
+```
+
+---
+
+#### 4. GET - Get Specific Member 
+
+**Endpoint:** `GET /api/members/1`
+
+**Expected Response:** `200 OK`
 ```json
 {
   "data": {
@@ -372,397 +296,92 @@ GET http://localhost:8000/api/v1/members/1
     "student_id": "STU12345",
     "name": "Alice Johnson",
     "email": "alice@example.com",
-    "phone": "+1234567890",
-    "member_since": "2023-01-15",
     "created_at": "2025-11-18T02:34:39.000000Z",
     "updated_at": "2025-11-18T02:34:39.000000Z"
   }
 }
 ```
 
-**Error Response:** `404 Not Found`
-```json
-{
-  "message": "No query results for model [App\\Models\\Member] 999"
-}
+**Or if not found:** `404 Not Found`
+
+---
+
+#### 5. DELETE - Delete Member 
+**Endpoint:** `DELETE /api/members/1`
+
+**Expected Response:** `204 No Content`
+```
+(Empty response body)
 ```
 
 ---
 
-#### 4. Update a Member
+## Postman Testing Guide
 
-**Endpoint:** `PUT /api/v1/members/{id}` or `PATCH /api/v1/members/{id}`
+### Setup
 
-**Description:** Update member information. All fields are optional.
-
-**Request:**
-```bash
-PUT http://localhost:8000/api/v1/members/1
-Content-Type: application/json
-
-{
-  "name": "Alice Johnson Smith",
-  "phone": "+1111111111"
-}
-```
-
-**Validation Rules:**
-- `student_id`: optional, string, unique (except current member) using Rule::unique()->ignore()
-- `name`: optional, string, max 255 characters
-- `email`: optional, email format, unique (except current member) using Rule::unique()->ignore()
-- `phone`: optional, string, max 20 characters
-- `member_since`: optional, valid date
-
-**Response:** `200 OK`
-```json
-{
-  "data": {
-    "id": 1,
-    "student_id": "STU12345",
-    "name": "Alice Johnson Smith",
-    "email": "alice@example.com",
-    "phone": "+1111111111",
-    "member_since": "2023-01-15",
-    "created_at": "2025-11-18T02:34:39.000000Z",
-    "updated_at": "2025-11-18T02:40:00.000000Z"
-  }
-}
-```
-
----
-
-#### 5. Delete a Member
-
-**Endpoint:** `DELETE /api/v1/members/{id}`
-
-**Description:** Remove a member from the library system.
-
-**Request:**
-```bash
-DELETE http://localhost:8000/api/v1/members/1
-```
-
-**Response:** `200 OK`
-```json
-{
-  "message": "Member deleted successfully"
-}
-```
-
-**Error Response:** `404 Not Found`
-```json
-{
-  "message": "No query results for model [App\\Models\\Member] 999"
-}
-```
-
----
-
-## HTTP Status Codes
-
-| Status Code | Meaning | Usage |
-|-------------|---------|-------|
-| 200 OK | Success | GET, PUT/PATCH, DELETE requests succeeded |
-| 201 Created | Resource created | POST request successfully created a resource |
-| 404 Not Found | Resource not found | Requested resource doesn't exist |
-| 422 Unprocessable Entity | Validation failed | Request data failed validation rules |
-
----
-
-## Testing with Postman
-
-### Initial Setup
-
-1. **Start Laravel Development Server:**
+1. Start server:
    ```bash
    php artisan serve
    ```
-   Server will run at: `http://localhost:8000`
 
-2. **Run Migrations (if not already done):**
-   ```bash
-   php artisan migrate
-   ```
+2. Open Postman
 
-3. **Open Postman** and create a new collection called "Library API"
+3. **IMPORTANT:** Set Headers untuk setiap request:
+   - `Accept: application/json`
+   - `Content-Type: application/json` (untuk POST/PATCH)
 
 ---
 
-### Creating Requests in Postman
+### Testing Order (Recommended)
 
-#### Collection Structure:
+#### BOOKS (Tests 1-6)
+
+1. **POST /api/books** - Create book (201) ✅
+2. **GET /api/books** - List all books (200) ✅
+3. **GET /api/books/1** - Get specific book (200) ✅
+4. **PATCH /api/books/1** - Update stock (200) ✅
+5. **DELETE /api/books/1** - Delete book (204) ✅
+6. **GET /api/books/1** - Get deleted book (404) ✅
+
+#### MEMBERS (Tests 7-9)
+
+7. **POST /api/members** - Create member (201) ✅
+8. **POST /api/members** - Duplicate student_id (422) ✅
+9. **POST /api/members** - Duplicate email (422) ✅
+10. **GET /api/members/1** - Get specific member (200) ✅
+11. **DELETE /api/members/1** - Delete member (204) ✅
+
+---
+
+## Quick Reference
+
+### Books Endpoints
 ```
-Library API
-├── Books
-│   ├── Get All Books
-│   ├── Create Book
-│   ├── Get Book by ID
-│   ├── Update Book
-│   └── Delete Book
-└── Members
-    ├── Get All Members
-    ├── Create Member
-    ├── Get Member by ID
-    ├── Update Member
-    └── Delete Member
-```
-
----
-
-### Step-by-Step Testing Guide
-
-#### Test 1: Create a New Book
-
-1. Create a new POST request
-2. Set URL: `http://localhost:8000/api/v1/books`
-3. Set Headers:
-   - `Content-Type`: `application/json`
-   - `Accept`: `application/json`
-4. Set Body (raw JSON):
-   ```json
-   {
-     "title": "Laravel 12: Complete Guide",
-     "author": "Taylor Otwell",
-     "isbn": "978-1234567890",
-     "published_year": 2025,
-     "available": true
-   }
-   ```
-5. Click **Send**
-6. **Expected Result:** 201 Created with book data
-
-**Screenshot Checklist:**
-- ✅ Status code: 201 Created
-- ✅ Response contains all book fields
-- ✅ `id` is generated automatically
-- ✅ `created_at` and `updated_at` timestamps are present
-
----
-
-#### Test 2: Get All Books
-
-1. Create a new GET request
-2. Set URL: `http://localhost:8000/api/v1/books`
-3. Set Headers:
-   - `Accept`: `application/json`
-4. Click **Send**
-5. **Expected Result:** 200 OK with array of books
-
-**Screenshot Checklist:**
-- ✅ Status code: 200 OK
-- ✅ Response has `data` array
-- ✅ All books are listed with complete information
-
----
-
-#### Test 3: Get Specific Book
-
-1. Create a new GET request
-2. Set URL: `http://localhost:8000/api/v1/books/1` (use ID from previous test)
-3. Set Headers:
-   - `Accept`: `application/json`
-4. Click **Send**
-5. **Expected Result:** 200 OK with single book data
-
----
-
-#### Test 4: Update a Book
-
-1. Create a new PUT request
-2. Set URL: `http://localhost:8000/api/v1/books/1`
-3. Set Headers:
-   - `Content-Type`: `application/json`
-   - `Accept`: `application/json`
-4. Set Body (raw JSON):
-   ```json
-   {
-     "title": "Laravel 12: Complete Guide - Updated",
-     "available": false
-   }
-   ```
-5. Click **Send**
-6. **Expected Result:** 200 OK with updated book data
-
-**Screenshot Checklist:**
-- ✅ Status code: 200 OK
-- ✅ Title is updated
-- ✅ Available status changed to false
-- ✅ `updated_at` timestamp is newer
-
----
-
-#### Test 5: Delete a Book
-
-1. Create a new DELETE request
-2. Set URL: `http://localhost:8000/api/v1/books/1`
-3. Set Headers:
-   - `Accept`: `application/json`
-4. Click **Send**
-5. **Expected Result:** 200 OK with success message
-
-**Screenshot Checklist:**
-- ✅ Status code: 200 OK
-- ✅ Message: "Book deleted successfully"
-- ✅ Verify deletion by trying GET request (should return 404)
-
----
-
-#### Test 6: Validation Testing
-
-**Test Invalid Data:**
-
-1. Create POST request to `http://localhost:8000/api/v1/books`
-2. Send empty body or invalid data:
-   ```json
-   {
-     "title": "",
-     "author": "Test",
-     "isbn": "invalid"
-   }
-   ```
-3. **Expected Result:** 422 Unprocessable Entity
-
-**Screenshot Checklist:**
-- ✅ Status code: 422 Unprocessable Entity
-- ✅ Response contains `errors` object
-- ✅ Custom validation messages are shown
-- ✅ All required fields are validated
-
----
-
-#### Test 7-11: Repeat for Members API
-
-Follow the same pattern for Members API endpoints with appropriate data:
-
-**Sample Member Data:**
-```json
-{
-  "student_id": "STU99999",
-  "name": "John Doe",
-  "email": "john.doe@example.com",
-  "phone": "+1234567890",
-  "member_since": "2025-01-01"
-}
+POST   /api/books       - Create book
+GET    /api/books       - List all books
+GET    /api/books/1     - Get book by ID
+PATCH  /api/books/1     - Update book stock
+DELETE /api/books/1     - Delete book
 ```
 
----
-
-### Advanced Postman Features
-
-#### 1. Environment Variables
-
-Create environment variables for easy switching:
-- `base_url`: `http://localhost:8000/api/v1`
-- Usage: `{{base_url}}/books`
-
-#### 2. Tests Scripts
-
-Add automatic validation in Postman Tests tab:
-
-```javascript
-// Test for successful creation
-pm.test("Status code is 201", function () {
-    pm.response.to.have.status(201);
-});
-
-pm.test("Response has data object", function () {
-    var jsonData = pm.response.json();
-    pm.expect(jsonData).to.have.property('data');
-});
-
-pm.test("Book has required fields", function () {
-    var jsonData = pm.response.json();
-    pm.expect(jsonData.data).to.have.property('id');
-    pm.expect(jsonData.data).to.have.property('title');
-    pm.expect(jsonData.data).to.have.property('author');
-});
+### Members Endpoints
+```
+POST   /api/members     - Create member
+GET    /api/members/1   - Get member by ID
+DELETE /api/members/1   - Delete member
 ```
 
-#### 3. Pre-request Scripts
-
-Save IDs automatically for subsequent requests:
-
-```javascript
-// Save book ID from response
-pm.test("Save book ID", function () {
-    var jsonData = pm.response.json();
-    pm.environment.set("book_id", jsonData.data.id);
-});
-
-// Use in next request URL: {{base_url}}/books/{{book_id}}
+### Expected Status Codes
 ```
-
----
-
-### Complete Test Scenarios
-
-#### Scenario 1: Complete Book Lifecycle
-1. ✅ Create a new book (201 Created)
-2. ✅ Get all books - verify new book exists (200 OK)
-3. ✅ Get specific book by ID (200 OK)
-4. ✅ Update book information (200 OK)
-5. ✅ Delete book (200 OK)
-6. ✅ Try to get deleted book (404 Not Found)
-
-#### Scenario 2: Validation Testing
-1. ✅ Create book without title (422 - validation error)
-2. ✅ Create book with duplicate ISBN (422 - unique constraint)
-3. ✅ Create book with future year (422 - max year validation)
-4. ✅ Create member with invalid email (422 - email format)
-5. ✅ Create member with duplicate email (422 - unique constraint)
-
-#### Scenario 3: Error Handling
-1. ✅ Get non-existent book (404 Not Found)
-2. ✅ Update non-existent member (404 Not Found)
-3. ✅ Delete non-existent resource (404 Not Found)
-
----
-
-## Running Automated Tests
-
-The API includes comprehensive Pest test suite. Run tests with:
-
-```bash
-# Run all tests
-php artisan test
-
-# Run specific test file
-php artisan test --filter=BookApiTest
-php artisan test --filter=MemberApiTest
-
-# Run with coverage
-php artisan test --coverage
+201 - Created (POST success)
+200 - OK (GET/PATCH success)
+204 - No Content (DELETE success)
+404 - Not Found (resource doesn't exist)
+422 - Unprocessable Entity (validation failed)
 ```
-
-**Test Coverage:**
-- ✅ All CRUD operations for Books and Members
-- ✅ Validation rules and error messages
-- ✅ HTTP status codes
-- ✅ JSON structure validation
-- ✅ Database integrity checks
-- ✅ Edge cases and error scenarios
-
----
-
-## Notes
-
-- All responses are in JSON format
-- Timestamps are in ISO 8601 format
-- The API uses Laravel's implicit route model binding for `{book}` and `{member}` parameters
-- Validation errors return detailed messages in both English and custom messages
-- The API follows RESTful conventions for HTTP methods and status codes
-
----
-
-## Support
-
-For issues or questions:
-1. Check the test files: `tests/Feature/Api/V1/`
-2. Review validation rules in: `app/Http/Requests/`
-3. Verify routes: `php artisan route:list`
 
 ---
 
 **Last Updated:** November 18, 2025  
-**Laravel Version:** 12.38.1  
-**API Version:** v1
+**PDF Compliance:** Section 4.2 - Panduan Pengujian Postman
