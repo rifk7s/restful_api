@@ -1,59 +1,195 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# RESTful API Perpustakaan
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+RESTful API for Library Information System built with Laravel 12. Provides CRUD operations for Books and Members.
 
-## About Laravel
+## Tech Stack
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+- Laravel 12.38.1
+- PHP 8.4.14
+- SQLite Database
+- Pest 4 for testing
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+## Project Structure
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+```
+app/
+├── Http/
+│   ├── Controllers/Api/V1/
+│   │   ├── BookController.php
+│   │   └── MemberController.php
+│   ├── Requests/
+│   │   ├── StoreBookRequest.php
+│   │   ├── UpdateBookRequest.php
+│   │   ├── StoreMemberRequest.php
+│   │   └── UpdateMemberRequest.php
+│   └── Resources/
+│       ├── BookResource.php
+│       └── MemberResource.php
+└── Models/
+    ├── Book.php
+    └── Member.php
 
-## Learning Laravel
+database/
+├── factories/
+│   ├── BookFactory.php
+│   └── MemberFactory.php
+└── migrations/
+    ├── 2025_11_18_023439_create_books_table.php
+    └── 2025_11_18_023440_create_members_table.php
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework. You can also check out [Laravel Learn](https://laravel.com/learn), where you will be guided through building a modern Laravel application.
+routes/
+└── api.php
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+tests/Feature/Api/V1/
+├── BookApiTest.php
+└── MemberApiTest.php
+```
 
-## Laravel Sponsors
+## API Endpoints
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+All endpoints are prefixed with `/api/v1`
 
-### Premium Partners
+**Books:**
+- GET    `/api/v1/books` - List all books
+- POST   `/api/v1/books` - Create new book
+- GET    `/api/v1/books/{id}` - Get specific book
+- PUT    `/api/v1/books/{id}` - Update book
+- DELETE `/api/v1/books/{id}` - Delete book
 
-- **[Vehikl](https://vehikl.com)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Redberry](https://redberry.international/laravel-development)**
-- **[Active Logic](https://activelogic.com)**
+**Members:**
+- GET    `/api/v1/members` - List all members
+- POST   `/api/v1/members` - Create new member
+- GET    `/api/v1/members/{id}` - Get specific member
+- PUT    `/api/v1/members/{id}` - Update member
+- DELETE `/api/v1/members/{id}` - Delete member
 
-## Contributing
+## Installation & Setup
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+```bash
+# Install dependencies
+composer install
 
-## Code of Conduct
+# Copy environment file
+cp .env.example .env
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+# Generate application key
+php artisan key:generate
 
-## Security Vulnerabilities
+# Run migrations
+php artisan migrate
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+# Start development server
+php artisan serve
+```
+
+## Development Commands
+
+### Creating Resources
+
+```bash
+# Create migration
+php artisan make:migration create_books_table
+
+# Create model with factory and seeder
+php artisan make:model Book --factory --seed
+
+# Create API controller
+php artisan make:controller Api/V1/BookController --api
+
+# Create form request
+php artisan make:request StoreBookRequest
+
+# Create API resource
+php artisan make:resource BookResource
+
+# Create feature test
+php artisan make:test --pest Api/V1/BookApiTest
+```
+
+### Database Management
+
+```bash
+# Run migrations
+php artisan migrate
+
+# Reset and re-run all migrations
+php artisan migrate:fresh
+
+# View database schema
+php artisan db:show
+
+# List all routes
+php artisan route:list
+```
+
+### Testing
+
+```bash
+# Run all tests
+php artisan test
+
+# Run specific test file
+php artisan test --filter=BookApiTest
+
+# Run with coverage
+php artisan test --coverage
+```
+
+### Code Quality
+
+```bash
+# Format code with Laravel Pint
+vendor/bin/pint
+
+# Format specific files
+vendor/bin/pint app/Models
+```
+
+## Database Schema
+
+**books table:**
+- id (primary key)
+- title (string, required)
+- author (string, required)
+- isbn (string, unique, required)
+- published_year (integer, required)
+- available (boolean, default: true)
+- created_at, updated_at (timestamps)
+
+**members table:**
+- id (primary key)
+- name (string, required)
+- email (string, unique, required)
+- phone (string, required)
+- member_since (date, required)
+- created_at, updated_at (timestamps)
+
+## Validation Rules
+
+**Books:**
+- title: required, max 255 chars
+- author: required, max 255 chars
+- isbn: required, unique
+- published_year: required, integer, min 1000, max (current year + 1)
+- available: optional, boolean
+
+**Members:**
+- name: required, max 255 chars
+- email: required, valid email, unique
+- phone: required, max 20 chars
+- member_since: required, valid date
+
+## Test Coverage
+
+- 18 feature tests covering all CRUD operations
+- 99 assertions validating functionality
+- All tests passing
+- Coverage includes validation, error handling, and edge cases
+
+## API Documentation
+
+Complete API documentation with Postman testing guide available in `API_DOCUMENTATION.md`
 
 ## License
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+MIT License
