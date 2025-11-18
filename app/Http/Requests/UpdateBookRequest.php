@@ -21,8 +21,8 @@ class UpdateBookRequest extends FormRequest
         return [
             'title' => ['sometimes', 'string', 'max:255'],
             'author' => ['sometimes', 'string', 'max:255'],
-            'isbn' => ['sometimes', 'string', 'unique:books,isbn,' . $bookId],
-            'published_year' => ['sometimes', 'integer', 'min:1000', 'max:' . (date('Y') + 1)],
+            'isbn' => ['sometimes', 'string', 'unique:books,isbn,'.$bookId],
+            'published_year' => ['sometimes', 'integer', 'min:1000', 'max:'.(date('Y') + 1)],
             'available' => ['sometimes', 'boolean'],
         ];
     }

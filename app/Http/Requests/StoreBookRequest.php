@@ -20,7 +20,7 @@ class StoreBookRequest extends FormRequest
             'title' => ['required', 'string', 'max:255'],
             'author' => ['required', 'string', 'max:255'],
             'isbn' => ['required', 'string', 'unique:books,isbn'],
-            'published_year' => ['required', 'integer', 'min:1000', 'max:' . (date('Y') + 1)],
+            'published_year' => ['required', 'integer', 'min:1000', 'max:'.(date('Y') + 1)],
             'available' => ['sometimes', 'boolean'],
         ];
     }

@@ -20,7 +20,7 @@ class UpdateMemberRequest extends FormRequest
 
         return [
             'name' => ['sometimes', 'string', 'max:255'],
-            'email' => ['sometimes', 'email', 'unique:members,email,' . $memberId],
+            'email' => ['sometimes', 'email', 'unique:members,email,'.$memberId],
             'phone' => ['sometimes', 'string', 'max:20'],
             'member_since' => ['sometimes', 'date'],
         ];
