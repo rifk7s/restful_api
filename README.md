@@ -47,21 +47,21 @@ tests/Feature/Api/V1/
 
 ## API Endpoints
 
-All endpoints are prefixed with `/api/v1`
+All endpoints are prefixed with `/api`
 
 **Books:**
-- GET    `/api/v1/books` - List all books
-- POST   `/api/v1/books` - Create new book
-- GET    `/api/v1/books/{id}` - Get specific book
-- PUT    `/api/v1/books/{id}` - Update book
-- DELETE `/api/v1/books/{id}` - Delete book
+- GET    `/api/books` - List all books
+- POST   `/api/books` - Create new book
+- GET    `/api/books/{id}` - Get specific book
+- PATCH  `/api/books/{id}` - Update book
+- DELETE `/api/books/{id}` - Delete book
 
 **Members:**
-- GET    `/api/v1/members` - List all members
-- POST   `/api/v1/members` - Create new member
-- GET    `/api/v1/members/{id}` - Get specific member
-- PUT    `/api/v1/members/{id}` - Update member
-- DELETE `/api/v1/members/{id}` - Delete member
+- GET    `/api/members` - List all members
+- POST   `/api/members` - Create new member
+- GET    `/api/members/{id}` - Get specific member
+- PATCH  `/api/members/{id}` - Update member
+- DELETE `/api/members/{id}` - Delete member
 
 ## Installation & Setup
 
@@ -153,15 +153,14 @@ vendor/bin/pint app/Models
 - author (string, required)
 - isbn (string, unique, required)
 - published_year (integer, required)
-- available (boolean, default: true)
+- stock (integer, default: 0)
 - created_at, updated_at (timestamps)
 
 **members table:**
 - id (primary key)
+- student_id (string, unique, required)
 - name (string, required)
 - email (string, unique, required)
-- phone (string, required)
-- member_since (date, required)
 - created_at, updated_at (timestamps)
 
 ## Validation Rules
@@ -171,18 +170,17 @@ vendor/bin/pint app/Models
 - author: required, max 255 chars
 - isbn: required, unique
 - published_year: required, integer, min 1000, max (current year + 1)
-- available: optional, boolean
+- stock: optional, integer, min 0
 
 **Members:**
+- student_id: required, unique
 - name: required, max 255 chars
 - email: required, valid email, unique
-- phone: required, max 20 chars
-- member_since: required, valid date
 
 ## Test Coverage
 
-- 18 feature tests covering all CRUD operations
-- 99 assertions validating functionality
+- 20 feature tests covering all CRUD operations
+- 104 assertions validating functionality
 - All tests passing
 - Coverage includes validation, error handling, and edge cases
 
