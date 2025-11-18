@@ -9,6 +9,15 @@ RESTful API for Library Information System built with Laravel 12. Provides CRUD 
 - SQLite Database
 - Pest 4 for testing
 
+<!-- ## Features
+
+- **RESTful API Design** - Follows REST principles with proper HTTP methods and status codes
+- **JSON Response Enforcement** - `ForceJsonResponse` middleware ensures all API endpoints return JSON responses
+- **Request Validation** - Form Request classes validate all incoming data with custom error messages
+- **API Resources** - Consistent JSON response structure using Laravel API Resources
+- **Comprehensive Testing** - Feature tests covering all CRUD operations and edge cases
+- **Database Factories** - Easy data generation for testing and seeding -->
+
 ## Project Structure
 
 ```
@@ -17,6 +26,8 @@ app/
 │   ├── Controllers/Api/V1/
 │   │   ├── BookController.php
 │   │   └── MemberController.php
+│   ├── Middleware/
+│   │   └── ForceJsonResponse.php
 │   ├── Requests/
 │   │   ├── StoreBookRequest.php
 │   │   ├── UpdateBookRequest.php
@@ -62,6 +73,21 @@ All endpoints are prefixed with `/api`
 - GET    `/api/members/{id}` - Get specific member
 - PATCH  `/api/members/{id}` - Update member
 - DELETE `/api/members/{id}` - Delete member
+<!-- 
+### Status Codes
+
+| Endpoint | Method | Success | Error |
+|----------|--------|---------|-------|
+| `/api/books` | POST | `201 Created` | `422 Unprocessable Entity` (validation) |
+| `/api/books` | GET | `200 OK` | - |
+| `/api/books/{id}` | GET | `200 OK` | `404 Not Found` |
+| `/api/books/{id}` | PATCH | `200 OK` | `404 Not Found`, `422 Unprocessable Entity` |
+| `/api/books/{id}` | DELETE | `204 No Content` | `404 Not Found` |
+| `/api/members` | POST | `201 Created` | `422 Unprocessable Entity` (validation) |
+| `/api/members` | GET | `200 OK` | - |
+| `/api/members/{id}` | GET | `200 OK` | `404 Not Found` |
+| `/api/members/{id}` | PATCH | `200 OK` | `404 Not Found`, `422 Unprocessable Entity` |
+| `/api/members/{id}` | DELETE | `204 No Content` | `404 Not Found` | -->
 
 ## Installation & Setup
 
@@ -186,6 +212,7 @@ vendor/bin/pint app/Models
 
 ## API Documentation
 
-Complete API documentation with Postman testing guide available in [API_DOCUMENTATION.md](API_DOCUMENTATION.md)
+- **API Documentation**: Complete API reference with examples → [API_DOCUMENTATION.md](API_DOCUMENTATION.md)
+- **Test Screenshots**: Postman test results for all endpoints → [SCREENSHOTS.md](SCREENSHOTS.md)
 
 
