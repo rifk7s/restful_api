@@ -11,18 +11,27 @@ class UpdateMemberRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return false;
+        return true;
     }
 
-    /**
-     * Get the validation rules that apply to the request.
-     *
-     * @return array<string, \Illuminate\Contracts\Validation\ValidationRule|array<mixed>|string>
-     */
     public function rules(): array
     {
+        $memberId = $this->route('member');
+
         return [
-            //
+            'name' => ['sometimes', 'string', 'max:255'],
+            'email' => ['sometimes', 'email', 'unique:members,email,' . $memberId],
+            'phone' => ['sometimes', 'string', 'max:20'],
+            'member_since' => ['sometimes', 'date'],
+        ];
+    }
+
+    public function messages(): array
+    {
+        return [
+            'email.email' => 'Please provide a valid email address',
+            'email.unique' => 'This email is already registered',
+            'member_since.date' => 'Please provide a valid date',
         ];
     }
 }

@@ -11,18 +11,28 @@ class UpdateBookRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return false;
+        return true;
     }
 
-    /**
-     * Get the validation rules that apply to the request.
-     *
-     * @return array<string, \Illuminate\Contracts\Validation\ValidationRule|array<mixed>|string>
-     */
     public function rules(): array
     {
+        $bookId = $this->route('book');
+
         return [
-            //
+            'title' => ['sometimes', 'string', 'max:255'],
+            'author' => ['sometimes', 'string', 'max:255'],
+            'isbn' => ['sometimes', 'string', 'unique:books,isbn,' . $bookId],
+            'published_year' => ['sometimes', 'integer', 'min:1000', 'max:' . (date('Y') + 1)],
+            'available' => ['sometimes', 'boolean'],
+        ];
+    }
+
+    public function messages(): array
+    {
+        return [
+            'isbn.unique' => 'This ISBN already exists',
+            'published_year.min' => 'Published year must be at least 1000',
+            'published_year.max' => 'Published year cannot be in the future',
         ];
     }
 }
