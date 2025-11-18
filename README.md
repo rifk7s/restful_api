@@ -188,7 +188,7 @@ vendor/bin/pint app/Models
 
 ## API Documentation
 
-Complete API documentation with Postman testing guide available in `API_DOCUMENTATION.md`
+Complete API documentation with Postman testing guide available in [API_DOCUMENTATION.md](API_DOCUMENTATION.md)
 
 ## License
 
